@@ -1,3 +1,20 @@
+// OpenAlex API access
+const oa = 'https://api.openalex.org';
+
+// identifiers for a work
+let openAlexID;
+
+// listen for institution searching => make suggestions from autocomplete endpoint
+const titleSearchInput = document.querySelector('[name=title]');
+titleSearchInput.addEventListener('input', () => {
+    getSuggestions(titleSearchInput.value); 
+});
+
+// listen for form submission => query OpenAlex dataset
+const searchForm = document.querySelector('[name=search]');
+searchForm.addEventListener('submit', getRecommendations);
+
+
 async function getSuggestions(searchText) {
     const response = await fetch(`${oa}/autocomplete/works?q=${searchText}`);
     const data = await response.json();
@@ -94,28 +111,3 @@ function loadResultsList(works, label) {
     }
     resultsListContainer.innerHTML = resultsList;
 }
-
-
-
-
-
-
-
-
-//
-
-// OpenAlex API access
-const oa = 'https://api.openalex.org';
-
-// identifiers for a work
-let openAlexID;
-
-// listen for institution searching => make suggestions from autocomplete endpoint
-const titleSearchInput = document.querySelector('[name=title]');
-titleSearchInput.addEventListener('input', () => {
-    getSuggestions(titleSearchInput.value); 
-});
-
-// listen for form submission => query OpenAlex dataset
-const searchForm = document.querySelector('[name=search]');
-searchForm.addEventListener('submit', getRecommendations);
