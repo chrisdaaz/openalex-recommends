@@ -22,9 +22,11 @@
 
         <form action="https://api.openalex.org" method="get" name="search">
 
-          <label for="doi"><strong>What are you reading?</strong> Enter the <a href="https://docs.openalex.org/about-the-data/work#title">Digital Object Identifier (DOI)</a> for a work:</label>
+          <label for="title"><h3>Search for the title of a work:</h3></label>
           
-          <input name="doi" type="search" placeholder="Example: https://doi.org/10.7717/peerj.4375" required>
+          <input name="title" type="search" placeholder="Begin typing..." required>
+
+          <div class="suggestions"></div>
                     
           <button type="submit" class="contrast">Submit</button>      
         
@@ -36,8 +38,7 @@
         <p>By <a href="https://github.com/chrisdaaz/">Chris Diaz</a>. This website is in no way affiliated with <a href="https://ourresearch.org/">OurResearch</a>, the makers of <a href="https://openalex.org/">OpenAlex</a>. I made this for fun.</p>
       </footer>
 
-    </main><!--
-    <script src="./refactor.js"></script>  -->
+    </main>
     <script src="./main.js"></script>  
   </body>
 </html>
