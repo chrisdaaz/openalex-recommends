@@ -1,20 +1,3 @@
-// OpenAlex API access
-const oa = 'https://api.openalex.org';
-
-// identifiers for a work
-let openAlexID;
-
-// listen for institution searching => make suggestions from autocomplete endpoint
-const titleSearchInput = document.querySelector('[name=title]');
-titleSearchInput.addEventListener('input', () => {
-    getSuggestions(titleSearchInput.value); 
-});
-
-// listen for form submission => query OpenAlex dataset
-const searchForm = document.querySelector('[name=search]');
-searchForm.addEventListener('submit', getRecommendations);
-
-// functions
 async function getSuggestions(searchText) {
     const response = await fetch(`${oa}/autocomplete/works?q=${searchText}`);
     const data = await response.json();
@@ -47,8 +30,6 @@ const displaySuggestions = (textMatches) => {
     }
 }
 
-// functions
-
 async function getOpenAlexID(title) {
     const queryString = encodeURIComponent(title);
     const apiCall = `${oa}/works?filter=title.search:${queryString}`;
@@ -76,22 +57,7 @@ async function getRelatedWorks(openAlexID) {
     const relatedWorksMetadata = await response.json();
     const relatedWorksResults = relatedWorksMetadata.results;
     console.log(relatedWorksResults);
-    loadTableData(relatedWorksResults);
-}
-
-function loadTableData(works) {
-    const container = document.querySelector('main');
-    const footer = document.querySelector('footer');
-    const tableCard = document.createElement('article');
-    container.insertBefore(tableCard, footer);
-    const table = document.createElement('table');
-    tableCard.appendChild(table);
-
-    let html = '<thead><tr><th>Title</th><th>Publication Year</th></tr></thead>';
-    for (let work of works) {
-        html += `<tr><td><a href="${work.doi}">${work.display_name}</a></td><td>${work.publication_year}</td></tr>`;
-    }
-    table.innerHTML = html;
+    loadResultsList(relatedWorksResults, 'Recent works about similar concepts:');
 }
 
 async function getCitedBy(openAlexID) {
@@ -99,7 +65,7 @@ async function getCitedBy(openAlexID) {
     const citedByMetadata = await response.json();
     const citedByResults = citedByMetadata.results;
     console.log(citedByResults);
-    loadTableData(citedByResults);
+    loadResultsList(citedByResults, 'Citations to this work:');
 }
 
 async function getReferencedWorks(openAlexID) {
@@ -107,6 +73,49 @@ async function getReferencedWorks(openAlexID) {
     const referencedWorksMetadata = await response.json();
     const referencedWorksResults = referencedWorksMetadata.results;
     console.log(referencedWorksResults);
-    loadTableData(referencedWorksResults);
+    loadResultsList(referencedWorksResults, 'Works listed in the References section:');
 }
 
+function loadResultsList(works, label) {
+    const container = document.querySelector('main');
+    const footer = document.querySelector('footer');
+    const resultsCard = document.createElement('article');
+    container.insertBefore(resultsCard, footer);
+    const header = document.createElement('header');
+    resultsCard.appendChild(header);
+    const heading = document.createElement('h3');
+    header.appendChild(heading);
+    heading.textContent = `${label}`;
+    const resultsListContainer = document.createElement('ul');
+    resultsCard.appendChild(resultsListContainer);
+    let resultsList = '';
+    for (const work of works) {
+        resultsList += `<li><a href="${work.doi}">${work.display_name}</a> (${work.publication_year})</li>`;
+    }
+    resultsListContainer.innerHTML = resultsList;
+}
+
+
+
+
+
+
+
+
+//
+
+// OpenAlex API access
+const oa = 'https://api.openalex.org';
+
+// identifiers for a work
+let openAlexID;
+
+// listen for institution searching => make suggestions from autocomplete endpoint
+const titleSearchInput = document.querySelector('[name=title]');
+titleSearchInput.addEventListener('input', () => {
+    getSuggestions(titleSearchInput.value); 
+});
+
+// listen for form submission => query OpenAlex dataset
+const searchForm = document.querySelector('[name=search]');
+searchForm.addEventListener('submit', getRecommendations);
