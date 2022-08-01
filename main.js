@@ -4,36 +4,33 @@ const oa = 'https://api.openalex.org';
 // identifiers for a work
 let openAlexID;
 
-// listen for form submission => query OpenAlex dataset
-const searchForm = document.querySelector('[name=search]');
-searchForm.addEventListener('submit', getRecommendations);
-
-//
-
 // listen for institution searching => make suggestions from autocomplete endpoint
 const titleSearchInput = document.querySelector('[name=title]');
 titleSearchInput.addEventListener('input', () => {
     getSuggestions(titleSearchInput.value); 
 });
 
+// listen for form submission => query OpenAlex dataset
+const searchForm = document.querySelector('[name=search]');
+searchForm.addEventListener('submit', getRecommendations);
+
 // functions
 async function getSuggestions(searchText) {
-    if (searchText.length > 0){
-        const response = await fetch(`${oa}/autocomplete/works?q=${searchText}`);
-        const data = await response.json();
-        const suggestions = data.results;
-        let searchTextMatches = suggestions.filter(suggestion => {
-            const regex = new RegExp(`^${searchText}`, 'gi');
-            return suggestion.display_name.match(regex);
-        });
-        if(searchText.length === 0) {
-            searchTextMatches = [];
-        }      
-        displaySuggestions(searchTextMatches);
-    } return;
+    const response = await fetch(`${oa}/autocomplete/works?q=${searchText}`);
+    const data = await response.json();
+    const suggestions = data.results;
+    let searchTextMatches = suggestions.filter(suggestion => {
+        const regex = new RegExp(`^${searchText}`, 'gi');
+        return suggestion.display_name.match(regex);
+    });
+    if(searchText.length === 0) {
+        searchTextMatches = [];
+    }      
+    displaySuggestions(searchTextMatches);
 }
 
 const displaySuggestions = (textMatches) => {
+    console.log(textMatches);
     const suggestionsDiv = document.querySelector(`.suggestions`);
     if (textMatches.length > 0) {
         const html = textMatches.map(textMatch => 
@@ -44,8 +41,6 @@ const displaySuggestions = (textMatches) => {
             const target = event.target;
             if (target.matches('li')) {
                 titleSearchInput.value = target.innerHTML;
-                textMatches.map(textMatch => 
-                    openAlexID = `${textMatch.id}`);
                 suggestionsDiv.remove();
             }}
         );
