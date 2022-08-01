@@ -37,7 +37,7 @@ const displaySuggestions = (textMatches) => {
     const suggestionsDiv = document.querySelector(`.suggestions`);
     if (textMatches.length > 0) {
         const html = textMatches.map(textMatch => 
-            `<li>${textMatch.display_name} (${textMatch.hint})</li>`
+            `<li>${textMatch.display_name}</li>`
             ).join('');
         suggestionsDiv.innerHTML = '<ul>' + html + '</ul>';
         suggestionsDiv.addEventListener('click', (event) => {
@@ -49,26 +49,28 @@ const displaySuggestions = (textMatches) => {
                 suggestionsDiv.remove();
             }}
         );
-    } 
+    }
 }
-
-
 
 // functions
 
-async function getOpenAlexID(doi) {
-    const apiCall = `${oa}/works/${doi}`;
+async function getOpenAlexID(title) {
+    const queryString = encodeURIComponent(title);
+    const apiCall = `${oa}/works?filter=title.search:${queryString}`;
+    console.log(apiCall);
     const response = await fetch(apiCall);
-    const workMetadata = await response.json();
-    openAlexID = workMetadata.id;
+    const metadata = await response.json();
+    openAlexID = metadata.results[0].id;
     openAlexID = openAlexID.replace('https://openalex.org/', '');
     return openAlexID;
 }
 
 async function getRecommendations(event) {
     event.preventDefault();
-    doi = document.querySelector('[name=doi]').value;
-    openAlexID = await getOpenAlexID(doi);  
+    title = document.querySelector('[name=title]').value;
+    console.log(title);
+    openAlexID = await getOpenAlexID(title);
+
     const relatedWorks = getRelatedWorks(openAlexID);
     const citedBy = getCitedBy(openAlexID); 
     const worksCited = getReferencedWorks(openAlexID);
