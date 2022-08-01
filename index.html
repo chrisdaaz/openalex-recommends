@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <title>OpenAlex Recommended Reading</title>
+    <style>
+      .suggestions ul { padding: 0; margin: 0; }
+      .suggestions ul li { list-style: none; padding: 5px 0; }
+      .suggestions ul li:hover { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <div class="headings">
+        <h1>OpenAlex Recommends</h1>
+        <h2>Get reading recommendations from <a href="https://docs.openalex.org/">OpenAlex</a>, a comprehensive catalog of scholarly papers.</h2>
+      </div>
+      
+      <article>
+
+        <form action="https://api.openalex.org" method="get" name="search">
+
+          <label for="doi"><strong>What are you reading?</strong> Enter the <a href="https://docs.openalex.org/about-the-data/work#title">Digital Object Identifier (DOI)</a> for a work:</label>
+          
+          <input name="doi" type="search" placeholder="Example: https://doi.org/10.7717/peerj.4375" required>
+                    
+          <button type="submit" class="contrast">Submit</button>      
+        
+        </form>
+        
+      </article>
+
+      <footer>
+        <p>By Chris Diaz</p>
+      </footer>
+
+    </main><!--
+    <script src="./refactor.js"></script>  -->
+    <script src="./main.js"></script>  
+  </body>
+</html>
