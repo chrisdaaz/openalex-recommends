@@ -16,7 +16,6 @@ async function getTitleSuggestions(searchText) {
 }
 
 function displayTitleSuggestions(textMatches) {
-    console.log(textMatches);
     const suggestionsDiv = document.querySelector(`.suggestions`);
     if (textMatches.length > 0) {
         const html = textMatches.map(textMatch => `<li>${textMatch.display_name}</li>`
@@ -36,7 +35,7 @@ function displayTitleSuggestions(textMatches) {
 async function getOpenAlexID(title) {
     const queryString = encodeURIComponent(title);
     const apiCall = `${oa}/works?filter=title.search:${queryString}`;
-    console.log(apiCall);
+    console.log(`Searched for ${apiCall}`);
     const response = await fetch(apiCall);
     const metadata = await response.json();
     openAlexID = metadata.results[0].id;
@@ -47,9 +46,7 @@ async function getOpenAlexID(title) {
 async function getRecommendations(event) {
     event.preventDefault();
     title = document.querySelector('[name=title]').value;
-    console.log(title);
     openAlexID = await getOpenAlexID(title);
-
     getRelatedWorks(openAlexID);
     getCitedBy(openAlexID); 
     getReferencedWorks(openAlexID);
@@ -59,24 +56,33 @@ async function getRelatedWorks(openAlexID) {
     const response = await fetch(`${oa}/works?filter=related_to:${openAlexID}`);
     const relatedWorksMetadata = await response.json();
     const relatedWorksResults = relatedWorksMetadata.results;
-    console.log(relatedWorksResults);
-    loadResultsList(relatedWorksResults, 'Recent works about similar concepts:');
+    const numberOfRelatedWorks = relatedWorksResults.length;
+    console.log(`Found ${numberOfRelatedWorks} related works`);
+    if (relatedWorksResults.length > 0) {
+        loadResultsList(relatedWorksResults, 'Recent works about similar concepts:');
+    };
 }
 
 async function getCitedBy(openAlexID) {
     const response = await fetch(`${oa}/works?filter=cites:${openAlexID}`);
     const citedByMetadata = await response.json();
     const citedByResults = citedByMetadata.results;
-    console.log(citedByResults);
-    loadResultsList(citedByResults, 'Citations to this work:');
+    const numberOfCitedByResults = citedByResults.length;
+    console.log(`Found ${numberOfCitedByResults} cited by works`);
+    if (citedByResults > 0) {
+        loadResultsList(citedByResults, 'Citations to this work:');
+    };
 }
 
 async function getReferencedWorks(openAlexID) {
     const response = await fetch(`${oa}/works?filter=cited_by:${openAlexID}`);
     const referencedWorksMetadata = await response.json();
     const referencedWorksResults = referencedWorksMetadata.results;
-    console.log(referencedWorksResults);
-    loadResultsList(referencedWorksResults, 'Works listed in the References section:');
+    const numberOfReferencedWorksResults = referencedWorksResults.length;
+    console.log(`Found ${numberOfReferencedWorksResults} referenced works`);
+    if (referencedWorksResults.length > 0) {
+        loadResultsList(referencedWorksResults, 'Works listed in the References section:');
+    };
 }
 
 function loadResultsList(works, label) {
