@@ -1,9 +1,6 @@
 // OpenAlex API access
 const oa = 'https://api.openalex.org';
 
-// identifiers for a work
-let openAlexID;
-
 async function getTitleSuggestions(searchText) {
     const response = await fetch(`${oa}/autocomplete/works?q=${searchText}`);
     const data = await response.json();
@@ -15,23 +12,23 @@ async function getTitleSuggestions(searchText) {
     if(searchText.length === 0) {
         searchTextMatches = [];
     }      
-    displaySuggestions(searchTextMatches);
+    displayTitleSuggestions(searchTextMatches);
 }
 
-const displaySuggestions = (textMatches) => {
+function displayTitleSuggestions(textMatches) {
     console.log(textMatches);
     const suggestionsDiv = document.querySelector(`.suggestions`);
     if (textMatches.length > 0) {
-        const html = textMatches.map(textMatch => 
-            `<li>${textMatch.display_name}</li>`
-            ).join('');
+        const html = textMatches.map(textMatch => `<li>${textMatch.display_name}</li>`
+        ).join('');
         suggestionsDiv.innerHTML = '<ul>' + html + '</ul>';
         suggestionsDiv.addEventListener('click', (event) => {
             const target = event.target;
             if (target.matches('li')) {
                 titleSearchInput.value = target.innerHTML;
                 suggestionsDiv.remove();
-            }}
+            }
+        }
         );
     }
 }
@@ -53,9 +50,9 @@ async function getRecommendations(event) {
     console.log(title);
     openAlexID = await getOpenAlexID(title);
 
-    const relatedWorks = getRelatedWorks(openAlexID);
-    const citedBy = getCitedBy(openAlexID); 
-    const worksCited = getReferencedWorks(openAlexID);
+    getRelatedWorks(openAlexID);
+    getCitedBy(openAlexID); 
+    getReferencedWorks(openAlexID);
 }
 
 async function getRelatedWorks(openAlexID) {
